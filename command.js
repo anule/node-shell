@@ -10,13 +10,14 @@ module.exports = {
     var today = new Date();
     process.stdout.write(today.toString());
   },
-  ls: function(){
+  ls: function(file, done){
+    var output = "";
     fs.readdir('.', function(err, files){
       if (err) throw err;
       files.forEach(function(file){
-        process.stdout.write(file.toString());
+        output += file.toString() + '\n';
       });
-      process.stdout.write('prompt > ');
+      done(output);
     });
   },
   cat: function(fileArr) {

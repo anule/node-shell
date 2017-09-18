@@ -1,5 +1,9 @@
 var command = require('./command.js');
 
+var done = function(output){
+  process.stdout.write(output);
+  process.stdout.write('\nprompt > ');
+}
 //output a prompt
 process.stdout.write('prompt > ');
 
@@ -13,7 +17,7 @@ process.stdin.on('data', function(data){
     command.date();
   }
   if (cmd === 'ls') {
-    command.ls();
+    command.ls('.', done);
   }
   var array = cmd.split(' ');
   if (array[0] === 'echo') {
@@ -35,5 +39,5 @@ process.stdin.on('data', function(data){
   else {
     process.stdout.write('You typed: ' + cmd);
   }
-  process.stdout.write('\nprompt > ');
+
 });
