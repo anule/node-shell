@@ -1,8 +1,37 @@
+// var command = require('./command.js');
+
+// var done = function(output){
+//   process.stdout.write(output);
+//   process.stdout.write('prompt > ');
+// }
+// //output a prompt
+// process.stdout.write('prompt > ');
+
+// //the stdin 'data' event fires after a user types in a line
+// process.stdin.on('data', function(data){
+//   var cmd = data.toString().trim();
+//   var cmdArr = cmd.split(' ');
+//   command[cmdArr[0]](cmdArr.slice(1), done);
+
+//   if (cmdArr[0] === 'curl'){
+//     command.curl(cmdArr.slice(1));
+//   }
+//  // process.stdout.write('You typed: ' + cmd);
+// });
+
+//PIPELINE
+
 var command = require('./command.js');
 
 var done = function(output){
   process.stdout.write(output);
-  process.stdout.write('\nprompt > ');
+  if (cmdArrList.length > 1) {
+    if (cmdArrList[1].includes(' ')) {
+      
+    }
+    command[cmdArrList[1]](output, fileArr, done);
+  }
+  process.stdout.write('prompt > ');
 }
 //output a prompt
 process.stdout.write('prompt > ');
@@ -10,34 +39,13 @@ process.stdout.write('prompt > ');
 //the stdin 'data' event fires after a user types in a line
 process.stdin.on('data', function(data){
   var cmd = data.toString().trim();
-  if (cmd === 'pwd') {
-    command.pwd();
-  }
-  if (cmd === 'date') {
-    command.date();
-  }
-  if (cmd === 'ls') {
-    command.ls('.', done);
-  }
-  var array = cmd.split(' ');
-  if (array[0] === 'echo') {
-    process.stdout.write(array.slice(1).join(' ').toString());
-  }
-  if (array[0] === 'cat') {
-    command.cat(array.slice(1));
-    // process.stdout.write('prompt > ');
-  }
-  if (array[0] === 'head'){
-    command.head(array.slice(1));
-  }
-  if (array[0] === 'tail'){
-    command.tail(array.slice(1));
-  }
-  if (array[0] === 'curl'){
-    command.curl(array.slice(1));
-  }
-  else {
-    process.stdout.write('You typed: ' + cmd);
-  }
+  var cmdArrList = cmd.split(/\s*\|\s*/g);
+  var cmdArr = cmdArrList[0].split(' ');  //[cat, bash.js]
+  command[cmdArr[0]](cmdArr.slice(1), done); //command[cat](bash.js)
 
+  if (cmdArr[0] === 'curl'){
+    command.curl(cmdArr.slice(1));
+  }
+ // process.stdout.write('You typed: ' + cmd);
 });
+

@@ -3,12 +3,16 @@ var request = require('request');
 
 
 module.exports = {
-  pwd: function(){
-    process.stdout.write(process.cwd());
+  pwd: function(fileName, done){
+    var output = '';
+    output += process.cwd();
+    done(output);
   },
-  date: function(){
+  date: function(fileName, done){
+    var output = '';
     var today = new Date();
-    process.stdout.write(today.toString());
+    output += today.toString();
+    done(output);
   },
   ls: function(file, done){
     var output = "";
@@ -20,43 +24,50 @@ module.exports = {
       done(output);
     });
   },
-  cat: function(fileArr) {
+  cat: function(fileArr, done) {
+    var output = '';
     var myFileContent = '';
     fileArr.forEach(function(file){
       fs.readFile(file, function(err, data){
         if (err) throw err;
         myFileContent = data;
         //console.log("myFileContent: ", myFileContent);
-        process.stdout.write(myFileContent.toString());
-        if (fileArr.indexOf(file) === fileArr.length - 1) {
-          process.stdout.write('prompt > ');
-        }
+        output += myFileContent.toString();
+        //console.log('my output: ', output);
+        done(output);
       });
+
     });
+
   },
-  head: function(fileArr){
+  head: function(fileArr, done){
+    var output = '';
     fs.readFile(fileArr[0], function(err, data){
       if (err) throw err;
 
       var fileLine = data.toString().split('\n');
       var fileLen = fileLine.slice(0, 5);
       fileLen.forEach(function(line){
-        process.stdout.write(line.toString() + '\n');
+        output += line.toString() + '\n';
+
       });
-      process.stdout.write('prompt > ');
+      done(output);
     });
+
   },
-  tail: function(fileArr){
+  tail: function(fileArr, done){
+    var output = '';
     fs.readFile(fileArr[0], function(err, data){
       if (err) throw err;
 
       var fileLine = data.toString().split('\n');
       var fileLen = fileLine.slice(fileLine.length - 6);
       fileLen.forEach(function(line){
-        process.stdout.write(line.toString() + '\n');
+        output += line.toString() + '\n';
       });
-      process.stdout.write('prompt > ');
+      done(output);
     });
+
   },
   curl: function(httpReq) {
     request(httpReq[0], function(error, response, body){
